@@ -11,7 +11,11 @@ class LessonScreen extends StatefulWidget {
   final int level;
   final String? lessoncontent;
 
-  LessonScreen({required this.category, required this.level, this.lessoncontent,});
+  LessonScreen({
+    required this.category,
+    required this.level,
+    this.lessoncontent,
+  });
 
   @override
   _LessonScreenState createState() => _LessonScreenState();
@@ -32,11 +36,12 @@ class _LessonScreenState extends State<LessonScreen> {
     intro =
         "Welcome to Level ${widget.level} in ${widget.category}. Here’s your lesson...";
     // _loadLesson();
-    if(widget.lessoncontent != null && widget.lessoncontent!.trim().isNotEmpty) {
+    if (widget.lessoncontent != null &&
+        widget.lessoncontent!.trim().isNotEmpty) {
       print("***********lesson content is not null**************");
       lessonText = widget.lessoncontent!;
-    }
-    else {
+      isLoading = false;
+    } else {
       _loadLesson();
     }
     _checkSkipOrContinue();
@@ -89,7 +94,7 @@ class _LessonScreenState extends State<LessonScreen> {
     try {
       final lessonDetails = LessonData.getLesson(widget.category, widget.level);
       final topic = lessonDetails['Topic'] ?? 'General Topic';
-            
+
       print("***********get lesson called successfully**************");
 
       final lesson = await AIBackendService.fetchLesson(
@@ -153,8 +158,11 @@ class _LessonScreenState extends State<LessonScreen> {
         context,
         MaterialPageRoute(
           builder:
-              (context) =>
-                  GameScreen(category: widget.category, level: widget.level, lessoncontent: lessonText,),
+              (context) => GameScreen(
+                category: widget.category,
+                level: widget.level,
+                lessoncontent: lessonText,
+              ),
         ),
       );
     } else {
@@ -199,7 +207,7 @@ class _LessonScreenState extends State<LessonScreen> {
                         children: [
                           Expanded(
                             child: SingleChildScrollView(
-                              child: MarkdownBody(data: lessonText)
+                              child: MarkdownBody(data: lessonText),
                             ),
                           ),
                           SizedBox(height: 20),

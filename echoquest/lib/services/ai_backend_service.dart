@@ -3,7 +3,7 @@ import 'package:echoquest/data/questions.dart';
 import 'package:http/http.dart' as http;
 
 class AIBackendService {
-  static const String baseUrl = 'http://192.168.29.213:8000';
+  static const String baseUrl = 'http://192.168.0.2:8000';
 
   static Future<String> fetchLesson(
     String category,
@@ -54,5 +54,27 @@ class AIBackendService {
   static List<Question> _parseQuestions(List<dynamic> raw) {
   return raw.map((item) => Question.fromJson(item)).toList();
 }
+
+static Future<String> fetchReply(String userMessage) async {
+    print("fetching reply for message: $userMessage");
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/chat"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"message": userMessage}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['response'] ?? "No response found.";
+      } else {
+        print("Backend error: ${response.statusCode} - ${response.body}");
+        return "Sorry, I couldn't get a reply right now.";
+      }
+    } catch (e) {
+      print("Error contacting backend: $e");
+      return "Oops! Something went wrong. Try again later.";
+    }
+  }
 
 } 

@@ -6,7 +6,7 @@ class TextToSpeech {
   static Future<void> _configureTTS() async {
     await _tts.setLanguage("en-US");
     await _tts.setPitch(1.0);
-    await _tts.setSpeechRate(0.5);
+    await _tts.setSpeechRate(1);
     await _tts.setVolume(1.0);
   }
 

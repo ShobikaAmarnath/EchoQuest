@@ -59,6 +59,9 @@ class _GameScreenState extends State<GameScreen> {
       );
       print("*******************questions generated******************");
       print(fetched);
+      if (fetched.isEmpty) {
+        _loadQuestions();
+      }
       setState(() {
         qs = fetched;
         isLoading = false;

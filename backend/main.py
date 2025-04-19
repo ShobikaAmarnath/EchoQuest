@@ -1,5 +1,5 @@
 import json
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 import os
@@ -50,8 +50,19 @@ def parse_questions(raw_text):
     # Attempt to parse as JSON first
     try:
         parsed = json.loads(raw_text)
+
         if isinstance(parsed, list):
             for item in parsed:
+                # Fix malformed options: single string instead of list
+                if (
+                    "options" in item and
+                    isinstance(item["options"], list) and
+                    len(item["options"]) == 1 and
+                    any(sep in item["options"][0] for sep in ["A)", "B)", "C)", "D)"])
+                ):
+                    split_options = re.findall(r'[A-D]\)\s*[^A-D]+', item["options"][0])
+                    item["options"] = [opt.strip() for opt in split_options]
+
                 if all(k in item for k in ("question", "options", "correctAnswer", "explanation")):
                     questions.append({
                         "question": item["question"].strip(),
@@ -111,7 +122,7 @@ async def generate_questions(category: str, level: int, topic: str):
       - a "correctAnswer" as an index (0-based: 0 for A, 1 for B, etc.)
       - an "explanation" (1-2 sentences)
 
-      Return a list of 5 questions only in JSON format, no extra text.
+      Return a list of 5 questions only in JSON format, no extra text. Do not combine multiple options in one string.
     """ 
     response = client.chat.completions.create(
         model="mistralai/mistral-7b-instruct",
@@ -125,3 +136,25 @@ async def generate_questions(category: str, level: int, topic: str):
     formatted_response = parse_questions(response.choices[0].message.content)
     print("New formatted list = ",formatted_response)
     return {"questions": formatted_response}
+
+@app.post("/chat")
+async def chat(request: Request):
+    data = await request.json()
+    user_prompt = data.get("message", "")
+
+    if not user_prompt:
+        return {"response": "No message provided."}
+
+    try:
+        response = client.chat.completions.create(
+            model="mistralai/mistral-7b-instruct",  # or use a different model
+            messages=[
+                {"role": "system", "content": "You are Kai, a helpful and friendly learning assistant."},
+                {"role": "user", "content": user_prompt}
+            ]
+        )
+        reply = response.choices[0].message.content.strip()
+        return {"response": reply}
+    except Exception as e:
+        print("Error generating chat response:", e)
+        return {"response": "Something went wrong while fetching the response."}
