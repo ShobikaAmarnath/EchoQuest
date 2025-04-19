@@ -33,6 +33,7 @@ class _LessonScreenState extends State<LessonScreen> {
         "Welcome to Level ${widget.level} in ${widget.category}. Here’s your lesson...";
     // _loadLesson();
     if(widget.lessoncontent != null && widget.lessoncontent!.trim().isNotEmpty) {
+      print("***********lesson content is not null**************");
       lessonText = widget.lessoncontent!;
     }
     else {
