@@ -3,7 +3,7 @@ import 'package:echoquest/data/questions.dart';
 import 'package:http/http.dart' as http;
 
 class AIBackendService {
-  static const String baseUrl = 'http://192.168.0.2:8000';
+  static const String baseUrl = 'http://192.168.29.213:8000';
 
   static Future<String> fetchLesson(
     String category,
@@ -55,4 +55,4 @@ class AIBackendService {
   return raw.map((item) => Question.fromJson(item)).toList();
 }
 
-}
+} 
