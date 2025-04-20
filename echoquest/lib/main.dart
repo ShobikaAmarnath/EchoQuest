@@ -1,3 +1,4 @@
+import 'package:echoquest/spacebar.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/screens/splash_screen.dart';
 import 'package:echoquest/utils/sound_helper.dart'; // ✅ Required import
@@ -13,11 +14,13 @@ class EchoQuestApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EchoQuest',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: SplashScreen(),
+    return GlobalChatbotListener(
+      child: MaterialApp(
+        title: 'EchoQuest',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark(),
+        home: SplashScreen(),
+      ),
     );
   }
 }

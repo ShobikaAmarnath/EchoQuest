@@ -149,7 +149,7 @@ async def chat(request: Request):
         response = client.chat.completions.create(
             model="mistralai/mistral-7b-instruct",  # or use a different model
             messages=[
-                {"role": "system", "content": "You are Kai, a helpful and friendly learning assistant."},
+                {"role": "system", "content": "You are Kai, a helpful and friendly learning assistant. Keep your responses concise and engaging within two to three sentences."},
                 {"role": "user", "content": user_prompt}
             ]
         )
