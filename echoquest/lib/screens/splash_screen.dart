@@ -1,6 +1,6 @@
+import 'package:echoquest/screens/intro_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/utils/text_to_speech.dart';
-import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 7), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => IntroScreen()),
       );
     });
   }

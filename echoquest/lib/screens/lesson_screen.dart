@@ -79,6 +79,7 @@ class _LessonScreenState extends State<LessonScreen> {
   void _handleKeyPress(RawKeyEvent event) {
     if (event.runtimeType.toString() == 'RawKeyDownEvent') {
       if (event.logicalKey.keyLabel == ' ') {
+        _stopAllActions();
         print("Spacebar pressed");
         // You can call a function like _askQuestion() or trigger narration
       }
@@ -88,6 +89,8 @@ class _LessonScreenState extends State<LessonScreen> {
   void _stopAllActions() {
     TextToSpeech.stop();
     VoiceInput.stopListening();
+    isListening = false;
+    isSpeaking = false;
   }
 
   void _loadLesson() async {

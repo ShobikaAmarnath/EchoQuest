@@ -19,6 +19,7 @@ class LevelsScreen extends StatefulWidget {
 class _LevelsScreenState extends State<LevelsScreen> {
   bool isListening = false;
   bool isManuallySelected = false;
+  bool isSpeaking = false;
   final stt.SpeechToText _speech = stt.SpeechToText();
   bool isMounted = true;
   final FocusNode _focusNode = FocusNode();
@@ -56,6 +57,10 @@ class _LevelsScreenState extends State<LevelsScreen> {
   void _stopAllActions() {
     TextToSpeech.stop();
     VoiceInput.stopListening();
+    isSpeaking = false;
+    isListening = false;
+    isManuallySelected = true;
+    _speech.stop();
   }
 
   Future<void> _promptUser() async {
@@ -63,6 +68,9 @@ class _LevelsScreenState extends State<LevelsScreen> {
     await Future.delayed(Duration(seconds: 5));
     if (!isManuallySelected) {
       _listenForLevel();
+    }
+    else {
+      _stopAllActions();
     }
   }
 
@@ -122,6 +130,8 @@ class _LevelsScreenState extends State<LevelsScreen> {
 
   void _handleKeyPress(RawKeyEvent event) {
     if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.space) {
+      _stopAllActions();
+      _stopListening();
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => ChatBotScreen()),
@@ -136,11 +146,10 @@ Widget build(BuildContext context) {
     onKey: _handleKeyPress,
     child: Stack(
       children: [
-        // 🔮 Background image
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('lib/img/level back.jpg'), // ✅ Ensure this is in your pubspec.yaml
+              image: AssetImage('lib/img/level back.jpg'), 
               fit: BoxFit.cover,
             ),
           ),
@@ -148,7 +157,7 @@ Widget build(BuildContext context) {
 
         // 📱 Foreground UI with levels
         Scaffold(
-          backgroundColor: Colors.transparent, // 👈 Make scaffold transparent
+          backgroundColor: Colors.transparent, 
           appBar: AppBar(
             title: Text("Levels - ${widget.category}"),
             backgroundColor: Colors.black.withOpacity(0.7),

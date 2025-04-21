@@ -1,8 +1,6 @@
-// import 'package:echoquest/utils/skip_button.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/utils/text_to_speech.dart';
 import 'package:echoquest/utils/voice_input.dart';
-// import 'package:echoquest/utils/audio_feedback.dart'; // New utility for mic sounds
 import 'levels_screen.dart';
 
 final String intro = '''In the ancient world of Sonaria, wisdom was stored in Echo Crystals, magical stones that held the secrets of Science, Technology, Engineering, Arts, and Mathematics (STEAM). These crystals kept the world in balance, helping civilizations grow and learn.
@@ -29,39 +27,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkSkipOrContinue();
+      _promptUser();
     });
-  }
-
-  Future<void> _checkSkipOrContinue() async {
-    await Future.delayed(Duration(seconds: 1));
-    await TextToSpeech.speak("Say Continue to listen to the intro narration or else Say Skip to skip the intro narration");
-    String sorc = await VoiceInput.listen();
-
-    if (sorc.toLowerCase().contains("continue")) {
-      await TextToSpeech.speak(intro);
-      await Future.delayed(Duration(seconds: 2));
-      _promptUser();
-    }
-    else if (sorc.toLowerCase().contains("skip")) {
-      _promptUser();
-    }
-    else {
-      await TextToSpeech.speak("I didn't hear a valid response. Please try again.");
-      await Future.delayed(Duration(seconds: 1));
-      _checkSkipOrContinue();
-    }
-
   }
 
   Future<void> _promptUser() async {
     await Future.delayed(Duration(seconds: 1));
-    // await TextToSpeech.speak(intro);
-    // await Future.delayed(Duration(seconds: 2));
     await TextToSpeech.speak("Choose a category: Maths, Science, Technology");
     await Future.delayed(Duration(seconds: 2));
 
-    // If user has not manually selected a category, start listening
     if (!isManuallySelected) {
       _listenForCategory();
     }
@@ -72,16 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
       isListening = true;
     });
 
-    // await AudioFeedback.playListeningSound(); // Play mic ON sound
     String spokenText = await VoiceInput.listen();
 
     setState(() {
       isListening = false;
     });
 
-    // await AudioFeedback.playStopListeningSound(); // Play mic OFF sound
-
-    // Stop listening & speaking when navigating manually
     if (isManuallySelected) return;
 
     if (spokenText.isNotEmpty) {
@@ -109,15 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToCategory(String category) {
-    _stopAllActions(); // Stop current speech and listening
+    _stopAllActions(); 
 
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => LevelsScreen(category: category)),
     ).then((_) {
-      // Resume listening when coming back (if needed)
-      isManuallySelected = false; // Reset manual selection
-      _promptUser(); // Start speech again when returning
+      isManuallySelected = false; 
+      _promptUser(); 
     });
   }
 

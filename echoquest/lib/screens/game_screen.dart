@@ -33,17 +33,6 @@ class _GameScreenState extends State<GameScreen> {
   void initState() {
     super.initState();
     print('GameScreen: initState() called');
-
-    // _categoryQuestions =
-    //     questions
-    //         .where(
-    //           (q) => q.category == widget.category && q.level == widget.level,
-    //         )
-    //         .toList();
-
-    // if (_categoryQuestions.isNotEmpty) {
-    //   Future.delayed(Duration(seconds: 1), _askQuestion);
-    // }
     _loadQuestions();
   }
 
@@ -79,6 +68,7 @@ class _GameScreenState extends State<GameScreen> {
 
   void _handleKeyPress(RawKeyEvent event) {
     if (event.runtimeType.toString() == 'RawKeyDownEvent') {
+      
       if (event.logicalKey.keyLabel == ' ') {
         print("Spacebar pressed");
         // You can call a function like _askQuestion() or trigger narration
