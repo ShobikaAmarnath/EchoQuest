@@ -38,6 +38,7 @@ class _IntroScreenState extends State<IntroScreen> {
     await TextToSpeech.speak(
       "Say Continue to listen to the intro narration or say Skip to skip the intro.",
     );
+
     String sorc = await VoiceInput.listen();
 
     if (sorc.toLowerCase().contains("continue")) {
@@ -45,6 +46,10 @@ class _IntroScreenState extends State<IntroScreen> {
     } else if (sorc.toLowerCase().contains("skip")) {
       _handleSkip();
     } else {
+      setState(() {
+        isListening = false;
+      });
+
       await TextToSpeech.speak(
         "I didn't hear a valid response. Please try again.",
       );
@@ -131,8 +136,7 @@ class _IntroScreenState extends State<IntroScreen> {
                     ),
                   ),
                   SizedBox(height: 24),
-                  if (isNarrating || isListening) CircularProgressIndicator(),
-
+                  if (isNarrating || isListening)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

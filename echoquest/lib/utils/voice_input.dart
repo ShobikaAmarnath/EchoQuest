@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'text_to_speech.dart';
-import 'package:echoquest/utils/sound_helper.dart' as mic_sound;
+import 'package:echoquest/utils/sound_helper.dart';
 
 class VoiceInput {
   static final stt.SpeechToText _speech = stt.SpeechToText();
@@ -43,7 +43,9 @@ class VoiceInput {
 
     // ✅ Mic ON Beep
     try {
-      await mic_sound.SoundHelper.playMicSound();
+      SoundHelper.playMicSound();
+      print("VoiceInput: Mic ON ********************************MIC ON**********************************");
+      await Future.delayed(const Duration(milliseconds: 500));
     } catch (e) {
       print("VoiceInput: Mic ON beep error - $e");
     }
@@ -65,7 +67,7 @@ class VoiceInput {
       if (status == 'done' || _shouldStopListening) {
         // ✅ Mic OFF Beep
         try {
-          await mic_sound.SoundHelper.playMicSound();
+          await SoundHelper.playMicSound();
         } catch (e) {
           print("VoiceInput: Mic OFF beep error - $e");
         }
