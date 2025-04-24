@@ -36,4 +36,12 @@ class BluetoothListener {
       isConnected = false;
     });
   }
+
+  void sendMessage(String message) {
+    if (_connection != null && _connection!.isConnected) {
+      _connection!.output.add(Uint8List.fromList(ascii.encode('$message\n')));
+    } else {
+      debugPrint('Not connected. Cannot send message.');
+    }
+  }
 }

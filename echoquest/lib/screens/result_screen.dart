@@ -1,4 +1,5 @@
 import 'package:echoquest/screens/lesson_screen.dart';
+import 'package:echoquest/utils/sound_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/utils/text_to_speech.dart';
 import 'package:echoquest/utils/progress_tracker.dart';
@@ -94,7 +95,7 @@ class _ResultScreenState extends State<ResultScreen> {
     setState(() {
       isListening = true;
     });
-
+    SoundHelper.playMicSound();
     String response = await VoiceInput.listen();
 
     setState(() {

@@ -27,10 +27,11 @@ class _LevelsScreenState extends State<LevelsScreen> {
   @override
   void initState() {
     super.initState();
-    _announceInstructions();
+    _promptUser();
+    // _announceInstructions();
+    // Future.delayed(Duration(seconds: 1));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print("Prompt user to listen level called !");
-      _promptUser();
       _focusNode.requestFocus(); // Ensure keyboard events are captured
     });
   }
@@ -45,14 +46,14 @@ class _LevelsScreenState extends State<LevelsScreen> {
     super.dispose();
   }
 
-  Future<void> _announceInstructions() async {
-    await TextToSpeech.speak(
-      "Welcome to EchoQuest. Tap the spacebar anytime to talk to Kai, your AI learning companion."
-    );
-    // await Future.delayed(Duration(seconds: 3));
-    // _promptUser();
+  // Future<void> _announceInstructions() async {
+  //   await TextToSpeech.speak(
+  //     "Tap the space bar anytime to talk to the Chatbot. Your personal assistance."
+  //   );
+  //   await Future.delayed(Duration(seconds: 3));
+  //   _promptUser();
         
-  }
+  // }
 
   void _stopAllActions() {
     TextToSpeech.stop();
@@ -64,8 +65,9 @@ class _LevelsScreenState extends State<LevelsScreen> {
   }
 
   Future<void> _promptUser() async {
+    if(isManuallySelected) return;
     await TextToSpeech.speak("Choose a level for ${widget.category}, from 1 to 10.");
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 2));
     if (!isManuallySelected) {
       _listenForLevel();
     }
@@ -176,7 +178,7 @@ Widget build(BuildContext context) {
                         bool unlocked = await ProgressTracker.isLevelUnlocked(widget.category, level);
                         if (unlocked) {
                           isManuallySelected = true;
-                          _stopListening();
+                          _stopAllActions();
                           Navigator.push(
                             context,
                             MaterialPageRoute(

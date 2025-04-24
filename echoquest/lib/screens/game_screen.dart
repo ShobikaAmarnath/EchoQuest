@@ -1,5 +1,7 @@
 import 'package:echoquest/services/ai_backend_service.dart';
+import 'package:echoquest/utils/sound_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../data/questions.dart';
 import '../utils/text_to_speech.dart';
 import '../utils/voice_input.dart';
@@ -26,7 +28,10 @@ class _GameScreenState extends State<GameScreen> {
   int _currentIndex = 0;
   int _score = 0;
   bool _isListening = false;
-  bool isLoading = true;
+  bool _isSpeaking = false;
+  bool _isManuallySelected = false;
+  bool isLoading = true;  
+  final stt.SpeechToText _speech = stt.SpeechToText();
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -35,6 +40,15 @@ class _GameScreenState extends State<GameScreen> {
     print('GameScreen: initState() called');
     _loadQuestions();
   }
+
+  void _stopAllActions() {
+  TextToSpeech.stop();
+    VoiceInput.stopListening();
+    _isSpeaking = false;
+    _isListening = false;
+    _isManuallySelected = true;
+    _speech.stop();
+}
 
   void _loadQuestions() async {
     print('GameScreen: _loadQuestions() called');
@@ -89,7 +103,7 @@ class _GameScreenState extends State<GameScreen> {
               image: DecorationImage(
                 image: AssetImage(
                   'lib/img/all back.jpg',
-                ), // ✅ Ensure this is in your pubspec.yaml
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -123,6 +137,7 @@ class _GameScreenState extends State<GameScreen> {
                               String option = entry.value;
                               return ElevatedButton(
                                 onPressed: () {
+                                  _stopAllActions();
                                   _checkAnswer(option);
                                 },
                                 child: Text(
@@ -155,6 +170,9 @@ class _GameScreenState extends State<GameScreen> {
 
   Future<void> _askQuestion() async {
     print('GameScreen: _askQuestion() called');
+    // _stopAllActions();
+
+    if (_isManuallySelected) return;
     if (_currentIndex < qs.length) {
       await TextToSpeech.speak(qs[_currentIndex].question);
       await Future.delayed(Duration(seconds: 2));
@@ -172,6 +190,9 @@ class _GameScreenState extends State<GameScreen> {
         });
 
         print('GameScreen: Waiting for user input');
+        
+        SoundHelper.playMicSound();
+        if(_isManuallySelected) return;
         String answer = await VoiceInput.listen();
 
         setState(() {
@@ -251,4 +272,8 @@ class _GameScreenState extends State<GameScreen> {
       ),
     );
   }
+
+  
 }
+
+

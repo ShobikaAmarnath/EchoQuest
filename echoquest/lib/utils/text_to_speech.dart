@@ -5,8 +5,9 @@ class TextToSpeech {
 
   static Future<void> _configureTTS() async {
     await _tts.setLanguage("en-IN");
+    await _tts.setVoice({"name" : "en-in-x-end#female_2-local", "locale" : "en-IN"});
     await _tts.setPitch(1.0);
-    await _tts.setSpeechRate(1);
+    await _tts.setSpeechRate(0.5);
     await _tts.setVolume(1.0);
   }
 
@@ -19,8 +20,13 @@ class TextToSpeech {
   }
 
   static Future<void> speakParagraph(String paragraph) async {
+
     List<String> sentences = paragraph.split(RegExp(r'(?<=[.?!])\s+'));
     for (String sentence in sentences) {
+      if (isSpeaking) {
+        await _tts.stop();
+        isSpeaking = false;
+      }
       if (sentence.trim().isNotEmpty) {
         await speak(sentence.trim());
         await Future.delayed(Duration(milliseconds: 500));

@@ -2,6 +2,7 @@ import 'package:echoquest/services/ai_backend_service.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/utils/voice_input.dart';
 import 'package:echoquest/utils/text_to_speech.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class ChatBotScreen extends StatefulWidget {
   @override
@@ -10,18 +11,30 @@ class ChatBotScreen extends StatefulWidget {
 
 class _ChatBotScreenState extends State<ChatBotScreen> {
   final List<Map<String, String>> _messages = [];
+  bool isManuallySelected = false;
   bool isListening = false;
   bool isSpeaking = false;
+  final stt.SpeechToText _speech = stt.SpeechToText();
+
+  void _stopAllActions() {
+    TextToSpeech.stop();
+    VoiceInput.stopListening();
+    isSpeaking = false;
+    isListening = false;
+    isManuallySelected = true;
+    _speech.stop();
+  }
 
   @override
   void initState() {
     super.initState();
+    _stopAllActions();
     _startConversation();
   }
 
   Future<void> _startConversation() async {
     await _addBotMessage(
-      "Hi! I'm Kai, your learning buddy. Ask me anything like 'What is gravity?' or say 'Start quiz'.",
+      "Hi Kai, I am your AI learning companion and Personal assistance, Ask me anything like Photosynthesis, Trignometry or Tell me if you want to quit me or say like i want to play the lesson content again, i will help you to navigate the particular page. ",
     );
     await _listenAndRespond();
   }

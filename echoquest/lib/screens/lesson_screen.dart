@@ -1,3 +1,5 @@
+import 'package:echoquest/utils/bluetooth_listener.dart';
+import 'package:echoquest/utils/sound_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/utils/text_to_speech.dart';
 import 'package:echoquest/utils/voice_input.dart';
@@ -5,6 +7,7 @@ import 'package:echoquest/data/lessons.dart';
 import 'package:echoquest/screens/game_screen.dart';
 import 'package:echoquest/services/ai_backend_service.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class LessonScreen extends StatefulWidget {
   final String category;
@@ -28,13 +31,15 @@ class _LessonScreenState extends State<LessonScreen> {
   bool isListening = false;
   bool isSpeaking = false;
   bool isMounted = true;
+  bool isManuallySelected = false;
+  final stt.SpeechToText _speech = stt.SpeechToText();
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     intro =
-        "Welcome to Level ${widget.level} in ${widget.category}. Here’s your lesson...";
+        "Welcome to Level ${widget.level} in ${widget.category}. Here's your lesson...";
     // _loadLesson();
     if (widget.lessoncontent != null &&
         widget.lessoncontent!.trim().isNotEmpty) {
@@ -52,7 +57,10 @@ class _LessonScreenState extends State<LessonScreen> {
     await TextToSpeech.speak(
       "Say Continue to listen to the Lesson content or else Say Skip to skip the lesson content",
     );
+    await Future.delayed(Duration(milliseconds: 5));
+    SoundHelper.playMicSound();
     String sorc = await VoiceInput.listen();
+    
 
     if (sorc.toLowerCase().contains("continue")) {
       await TextToSpeech.speak(intro);
@@ -64,7 +72,7 @@ class _LessonScreenState extends State<LessonScreen> {
       await TextToSpeech.speak(
         "I didn't hear a valid response. Please try again.",
       );
-      await Future.delayed(Duration(seconds: 1));
+      // await Future.delayed(Duration(seconds: 1));
       _checkSkipOrContinue();
     }
   }
@@ -91,6 +99,8 @@ class _LessonScreenState extends State<LessonScreen> {
     VoiceInput.stopListening();
     isListening = false;
     isSpeaking = false;
+    _speech.stop();
+    isManuallySelected = true;
   }
 
   void _loadLesson() async {
@@ -119,24 +129,25 @@ class _LessonScreenState extends State<LessonScreen> {
   }
 
   void _speakLesson() async {
-    _stopAllActions();
     isSpeaking = true;
 
     // await TextToSpeech.speak("Welcome to Level ${widget.level} in ${widget.category}. Here’s your lesson...");
     // await Future.delayed(Duration(seconds: 1));
 
     if (!isMounted) return;
+    if (isManuallySelected) return;
     await TextToSpeech.speakParagraph(lessonText);
     await Future.delayed(Duration(seconds: 2));
     _startQuiz();
   }
 
   void _startQuiz() async {
-    _stopAllActions();
     isSpeaking = true;
 
     if (!isMounted) return;
+    if (isManuallySelected) return;
     await TextToSpeech.speak("Say Start to start the quiz.");
+    SoundHelper.playMicSound();
 
     if (!isMounted) return;
     _listenForQuizCommand();
@@ -147,6 +158,7 @@ class _LessonScreenState extends State<LessonScreen> {
     setState(() {
       isListening = true;
     });
+    if(isManuallySelected){ _stopAllActions(); return; }
 
     String spokenText = await VoiceInput.listen();
 
@@ -218,6 +230,7 @@ class _LessonScreenState extends State<LessonScreen> {
                           ElevatedButton(
                             onPressed: () {
                               _stopAllActions();
+                              BluetoothListener().sendMessage("ANSWER NOW");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

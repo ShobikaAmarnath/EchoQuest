@@ -30,13 +30,14 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   Future<void> _checkSkipOrContinue() async {
+    _stopAllActions();
     setState(() {
       isListening = true;
     });
 
     await Future.delayed(Duration(seconds: 1));
     await TextToSpeech.speak(
-      "Say Continue to listen to the intro narration or say Skip to skip the intro.",
+      "Say Continue to listen to the intro narration or say Skip to skip the intro narration.",
     );
 
     String sorc = await VoiceInput.listen();
