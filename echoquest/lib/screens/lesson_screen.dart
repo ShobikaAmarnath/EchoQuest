@@ -228,7 +228,7 @@ class _LessonScreenState extends State<LessonScreen> {
                           SizedBox(height: 20),
                           if (isListening) CircularProgressIndicator(),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: BluetoothListener().isConnected ? () {
                               _stopAllActions();
                               BluetoothListener().sendMessage("ANSWER NOW");
                               Navigator.push(
@@ -242,7 +242,7 @@ class _LessonScreenState extends State<LessonScreen> {
                                       ),
                                 ),
                               );
-                            },
+                            } : null,
                             child: Text("Start Quiz"),
                           ),
                         ],

@@ -4,11 +4,12 @@ class TextToSpeech {
   static bool isSpeaking = false;
 
   static Future<void> _configureTTS() async {
-    await _tts.setLanguage("en-IN");
-    await _tts.setVoice({"name" : "en-in-x-end#female_2-local", "locale" : "en-IN"});
-    await _tts.setPitch(1.0);
-    await _tts.setSpeechRate(0.5);
+    await _tts.setLanguage("en-US");
+    await _tts.setVoice({"name" : "en-us-SMTf00", "locale" : "eng-x-lvariant-f00"});
+    await _tts.setPitch(1.1);
+    await _tts.setSpeechRate(0.43);
     await _tts.setVolume(1.0);
+    await _tts.awaitSpeakCompletion(true);
   }
 
   static Future<void> speak(String text) async {
@@ -29,7 +30,7 @@ class TextToSpeech {
       }
       if (sentence.trim().isNotEmpty) {
         await speak(sentence.trim());
-        await Future.delayed(Duration(milliseconds: 500));
+        await Future.delayed(Duration(milliseconds: 700));
       }
     }
   }
