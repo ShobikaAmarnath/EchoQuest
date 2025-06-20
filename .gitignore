@@ -18,3 +18,5 @@ backend/venv/
 
 # Windows
 Thumbs.db
+
+/tst.txt
