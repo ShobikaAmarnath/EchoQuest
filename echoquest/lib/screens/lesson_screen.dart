@@ -230,7 +230,7 @@ class _LessonScreenState extends State<LessonScreen> {
                           ElevatedButton(
                             onPressed: BluetoothListener().isConnected ? () {
                               _stopAllActions();
-                              BluetoothListener().sendMessage("ANSWER NOW");
+                              // BluetoothListener().sendMessage("ANSWER NOW");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
