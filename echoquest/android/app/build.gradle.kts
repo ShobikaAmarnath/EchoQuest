@@ -7,8 +7,16 @@ plugins {
 
 android {
     namespace = "com.example.echoquest"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35  // set explicitly to 33 or 34
     ndkVersion = "27.0.12077973"
+
+    defaultConfig {
+        applicationId = "com.example.echoquest"
+        minSdk = 21
+        targetSdk = 35  // set explicitly to match compileSdk
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

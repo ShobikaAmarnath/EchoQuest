@@ -1,5 +1,5 @@
 import 'package:echoquest/spacebar.dart';
-import 'package:echoquest/utils/bluetooth_listener.dart';
+// import 'package:echoquest/utils/bluetooth_listener.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/screens/splash_screen.dart';
 import 'package:echoquest/utils/sound_helper.dart'; // ✅ Required import
@@ -26,7 +26,7 @@ class EchoQuestApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       home: Builder(
         builder: (context) {
-          BluetoothListener().start(context); // Start Bluetooth listener
+          // BluetoothListener().start(context); // Start Bluetooth listener
 
           return SpacebarListener(
             child: SplashScreen(),

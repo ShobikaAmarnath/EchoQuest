@@ -1,4 +1,4 @@
-import 'package:echoquest/utils/bluetooth_listener.dart';
+// import 'package:echoquest/utils/bluetooth_listener.dart';
 import 'package:echoquest/utils/sound_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:echoquest/utils/text_to_speech.dart';
@@ -60,7 +60,6 @@ class _LessonScreenState extends State<LessonScreen> {
     await Future.delayed(Duration(milliseconds: 5));
     SoundHelper.playMicSound();
     String sorc = await VoiceInput.listen();
-    
 
     if (sorc.toLowerCase().contains("continue")) {
       await TextToSpeech.speak(intro);
@@ -158,7 +157,10 @@ class _LessonScreenState extends State<LessonScreen> {
     setState(() {
       isListening = true;
     });
-    if(isManuallySelected){ _stopAllActions(); return; }
+    if (isManuallySelected) {
+      _stopAllActions();
+      return;
+    }
 
     String spokenText = await VoiceInput.listen();
 
@@ -228,9 +230,11 @@ class _LessonScreenState extends State<LessonScreen> {
                           SizedBox(height: 20),
                           if (isListening) CircularProgressIndicator(),
                           ElevatedButton(
-                            onPressed: BluetoothListener().isConnected ? () {
+                            onPressed: () {
+                              // Stop any ongoing TTS or voice listening
                               _stopAllActions();
-                              // BluetoothListener().sendMessage("ANSWER NOW");
+
+                              // Navigate to GameScreen
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -242,7 +246,7 @@ class _LessonScreenState extends State<LessonScreen> {
                                       ),
                                 ),
                               );
-                            } : null,
+                            },
                             child: Text("Start Quiz"),
                           ),
                         ],

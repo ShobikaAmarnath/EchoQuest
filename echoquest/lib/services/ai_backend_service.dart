@@ -3,7 +3,7 @@ import 'package:echoquest/data/questions.dart';
 import 'package:http/http.dart' as http;
 
 class AIBackendService {
-  static const String baseUrl = 'http://192.168.0.9:8000';
+  static const String baseUrl = 'https://echoquest-vz3v.onrender.com';
 
   static Future<String> fetchLesson(
     String category,
